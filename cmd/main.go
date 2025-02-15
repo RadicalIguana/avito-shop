@@ -22,7 +22,7 @@ func main() {
 	coinService := services.NewCoinService(coinRepo)
 	coinHandler := handlers.NewCoinHandler(coinService)
 
-    merchRepo := repositories.NewMerchRepository(database.DB)
+	merchRepo := repositories.NewMerchRepository(database.DB)
 	merchService := services.NewMerchService(merchRepo)
 	merchHandler := handlers.NewMerchHandler(merchService)
 
@@ -30,7 +30,11 @@ func main() {
 	userService := services.NewUserInfoService(userRepo)
 	userHandler := handlers.NewUserInfoHandler(userService)
 
-	r := gin.Default()
+	r := gin.New()
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
+	r.RedirectTrailingSlash = false
+	r.RemoveExtraSlash = true
 
 	r.POST("/api/auth", handlers.AuthHandler)
 
@@ -40,5 +44,5 @@ func main() {
 	r.GET("/api/buy/:item", merchHandler.PurchaseItem)
 	r.GET("/api/info", userHandler.GetUserInfo)
 
-	log.Fatal(r.Run("127.0.0.1:8080")) // listen and serve on 0.0.0.0:8080
+	log.Fatal(r.Run("0.0.0.0:8080"))
 }

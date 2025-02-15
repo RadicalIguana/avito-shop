@@ -1,0 +1,64 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: avito_shop_db
+      DB_PORT: 5432
+      GOMAXPROCS: "2"
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 7G
+    ulimits:
+      nofile: 
+        soft: 65535
+        hard: 65535
+    sysctls:
+      net.core.somaxconn: "65535"
+      net.ipv4.tcp_max_syn_backlog: "65535"
+      net.ipv4.tcp_max_tw_buckets: "2000000"
+    networks:
+      - backend
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: avito_shop_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: >
+      postgres -c max_connections=500
+               -c shared_buffers=2GB
+               -c effective_cache_size=4GB
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 7G
+    networks:
+      - backend
+  
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data:

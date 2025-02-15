@@ -52,6 +52,11 @@ func (r *UserInfoRepository) GetUserInventory(ctx context.Context, userId int) (
 		}
 		inventory = append(inventory, item)
 	}
+
+	if inventory == nil {
+		inventory = []models.InventoryItem{}
+	}
+
 	return inventory, nil
 }
 
