@@ -15,7 +15,7 @@ func NewMerchService(repo *repositories.MerchRepository) *MerchService {
     return &MerchService{repo: repo}
 }
 
-func (s *MerchService) PurchaseItem(ctx context.Context, userID, itemName string) error {
+func (s *MerchService) PurchaseItem(ctx context.Context, userID int, itemName string) error {
 	tx, err := s.repo.BeginTx(ctx)
 	if err != nil {
         return err

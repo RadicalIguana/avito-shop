@@ -6,3 +6,26 @@ type User struct {
 	Password string `json:"password"`
 	Coins 	 int 	`json:"coins"`
 }
+
+type UserResponse struct {
+	Coins 		int 			`json:"coins"`
+	Inventory   []InventoryItem `json:"inventory"`
+	CoinHistory CoinHistory 	`json:"coinHistory"`
+}
+
+type InventoryItem struct {
+	Name 	 string `json:"name"`
+	Quantiry int    `json:"quantity"`
+}
+
+type CoinHistory struct {
+	Received []Transfer `json:"received"`
+	Sent	 []Transfer `json:"sent"` 
+}
+
+// TODO: Трансфер уже описан в models/coin.go. Может сделать модель для неё?
+// type Transfer struct {
+// 	FromUser string `json:"fromUser"`
+//     ToUser   string `json:"toUser"`
+//     Amount   int    `json:"amount"`
+// }

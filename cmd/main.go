@@ -7,29 +7,38 @@ import (
 
 	"github.com/RadicalIguana/avito-shop/internal/database"
 	"github.com/RadicalIguana/avito-shop/internal/handlers"
-	"github.com/RadicalIguana/avito-shop/internal/services"
+	"github.com/RadicalIguana/avito-shop/internal/middlewares"
 	"github.com/RadicalIguana/avito-shop/internal/repositories"
+	"github.com/RadicalIguana/avito-shop/internal/services"
 )
 
 func main() {
-	db, err := database.Connect()
-	if err != nil {
-		log.Fatal("Failed to connect to database: %w", err)
+	if err := database.Connect(); err != nil {
+		log.Fatalf("Could not connect to database: %v", err)
 	}
-	defer db.Close()
 
 	// TODO: Для чего такие определения?
-	coinRepo := repositories.NewCoinRepository(db)
+	coinRepo := repositories.NewCoinRepository(database.DB)
 	coinService := services.NewCoinService(coinRepo)
 	coinHandler := handlers.NewCoinHandler(coinService)
 
-    merchRepo := repositories.NewMerchRepository(db)
+    merchRepo := repositories.NewMerchRepository(database.DB)
 	merchService := services.NewMerchService(merchRepo)
 	merchHandler := handlers.NewMerchHandler(merchService)
 
+	userRepo := repositories.NewUserInfoRepository(database.DB)
+	userService := services.NewUserInfoService(userRepo)
+	userHandler := handlers.NewUserInfoHandler(userService)
+
 	r := gin.Default()
+
+	r.POST("/api/auth", handlers.AuthHandler)
+
+	r.Use(middlewares.AuthMiddleware())
+
 	r.POST("/api/sendCoin", coinHandler.SendCoins)
 	r.GET("/api/buy/:item", merchHandler.PurchaseItem)
+	r.GET("/api/info", userHandler.GetUserInfo)
 
-	log.Fatal(r.Run(":8080")) // listen and serve on 0.0.0.0:8080
+	log.Fatal(r.Run("127.0.0.1:8080")) // listen and serve on 0.0.0.0:8080
 }

@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"net/http"
-	"github.com/gin-gonic/gin"
+
 	"github.com/RadicalIguana/avito-shop/internal/models"
 	"github.com/RadicalIguana/avito-shop/internal/services"
+	"github.com/gin-gonic/gin"
 )
 
 type CoinHandler struct {
@@ -22,14 +23,20 @@ func (h *CoinHandler) SendCoins(c *gin.Context) {
         return
     }
 
-	// Извлечение ID отправителя из JWT
-	// claims := r.Context().Value("userClaims").(map[string]interface{})
-    // fromUserID := claims["userID"].(string)
+	fromUserID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
 
-    // TODO: Изменить получение ID отправителя 
-	fromUserID := "1"
-	
-	if err := h.service.TransferCoins(c.Request.Context(), fromUserID, req.ToUser, req.Amount); err != nil {
+	floatID, ok := fromUserID.(float64)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+	userID := int(floatID)
+
+	if err := h.service.TransferCoins(c.Request.Context(), userID, req.ToUser, req.Amount); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }

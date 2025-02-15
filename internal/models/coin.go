@@ -1,14 +1,14 @@
 package models
 
 type TransferRequest struct {
-	ToUser string `json:"toUser"`
-	Amount int    `json:"amount"`
+	ToUser int `json:"toUser"`
+	Amount int `json:"amount"`
 }
 
 type Transfer struct {
-	ID        string `json:"id"`
-	FromUser  string `json:"fromUser"`
-	ToUser    string `json:"toUser"`
+	ID        int 	 `json:"id"`
+	FromUser  int	 `json:"fromUser"`
+	ToUser    int 	 `json:"toUser"`
 	Amount    int    `json:"amount"`
 	CreatedAt string `json:"createdAt"`
 }
@@ -16,7 +16,7 @@ type Transfer struct {
 
 // TODO: Просмотреть правильность использования UserCoin вместо User
 type UserCoin struct {
-	ID    string `json:"id"`
+	ID    int `json:"id"`
 	Coins int `json:"coins"`
 }
 

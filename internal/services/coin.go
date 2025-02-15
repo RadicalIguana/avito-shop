@@ -7,7 +7,6 @@ import (
 
 	"github.com/RadicalIguana/avito-shop/internal/models"
 	"github.com/RadicalIguana/avito-shop/internal/repositories"
-	"github.com/google/uuid"
 )
 
 type CoinService struct {
@@ -18,7 +17,7 @@ func NewCoinService(repo *repositories.CoinRepository) *CoinService {
     return &CoinService{repo: repo}
 }
 
-func (s *CoinService) TransferCoins(ctx context.Context, fromUserID, toUserID string, amount int) error {
+func (s *CoinService) TransferCoins(ctx context.Context, fromUserID, toUserID, amount int) error {
     // Валидация
     if amount <= 0 {
         return errors.New("amount must be positive")
@@ -54,7 +53,6 @@ func (s *CoinService) TransferCoins(ctx context.Context, fromUserID, toUserID st
     }
 
 	transfer := &models.Transfer{
-		ID: uuid.New().String(),
 		FromUser: fromUserID,
 		ToUser: toUserID,
         Amount: amount,

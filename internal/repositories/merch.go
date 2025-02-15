@@ -21,14 +21,14 @@ func (r *MerchRepository) BeginTx(ctx context.Context) (pgx.Tx, error) {
     return r.db.Begin(ctx)
 }
 
-func (r *MerchRepository) GetUserById(ctx context.Context, userId string) (*models.User, error) {
+func (r *MerchRepository) GetUserById(ctx context.Context, userID int) (*models.User, error) {
 	query := `
 		SELECT id, coins
 		FROM users
 		WHERE id = $1
 		FOR UPDATE
 	`
-	row := r.db.QueryRow(ctx, query, userId)
+	row := r.db.QueryRow(ctx, query, userID)
 	var user models.User
 	if err := row.Scan(&user.Id, &user.Coins); err != nil {
 		// TODO: в чем разница errors и fmt.Errorf? Что использовать?
@@ -54,19 +54,19 @@ func (r *MerchRepository) GetItemByName(ctx context.Context, name string) (*mode
 	return &merch, nil
 }
 
-func (r *MerchRepository) UpdateUserBalance(ctx context.Context, userId string, newCoins int) error {
+func (r *MerchRepository) UpdateUserBalance(ctx context.Context, userID int, newCoins int) error {
 	query := `UPDATE users SET coins = $1 WHERE id = $2`
-	_, err := r.db.Exec(ctx, query, newCoins, userId)
+	_, err := r.db.Exec(ctx, query, newCoins, userID)
 	return err
 }
 
-func (r *MerchRepository) AddOrUpdateItemToInventory(ctx context.Context, userId string, itemName string) error {
+func (r *MerchRepository) AddOrUpdateItemToInventory(ctx context.Context, userID int, itemName string) error {
 	query := `
 		INSERT INTO inventory (user_id, item_name, quantity) 
 		VALUES ($1, $2, 1)
 		ON CONFLICT (user_id, item_name) DO UPDATE
 		SET quantity = inventory.quantity + 1
 	`
-	_, err := r.db.Exec(ctx, query, userId, itemName)
+	_, err := r.db.Exec(ctx, query, userID, itemName)
 	return err
 }

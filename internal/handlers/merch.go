@@ -19,17 +19,21 @@ func NewMerchHandler(service *services.MerchService) *MerchHandler {
 // TODO: Определить единое название
 // TODO: Что такое gin.HandlerFunc?
 func (h *MerchHandler) PurchaseItem(c *gin.Context) {
-	// var req models.BuyRequest
-	// if err := c.ShouldBindJSON(&req); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
-	// TODO: Извлечение ID покупателя из JWT
-	userID := "1"
-
 	itemName := c.Param("item")
 	ctx := c.Request.Context()
+
+	fromUserID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	floatID, ok := fromUserID.(float64)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+	userID := int(floatID)
 
 	if err := h.service.PurchaseItem(ctx, userID, itemName); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

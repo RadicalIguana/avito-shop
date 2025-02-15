@@ -21,7 +21,7 @@ func (r *CoinRepository) BeginTx(ctx context.Context) (pgx.Tx, error) {
 }
 
 // TODO: Может поменять на GetUserById?
-func (r *CoinRepository) GetUserForUpdate(ctx context.Context, userID string) (*models.UserCoin, error) {
+func (r *CoinRepository) GetUserForUpdate(ctx context.Context, userID int) (*models.UserCoin, error) {
     query := `
         SELECT id, coins
         FROM users
@@ -37,7 +37,7 @@ func (r *CoinRepository) GetUserForUpdate(ctx context.Context, userID string) (*
     return &user, nil
 }
 
-func (r *CoinRepository) UpdateBalance(ctx context.Context, userID string, newCoins int) error {
+func (r *CoinRepository) UpdateBalance(ctx context.Context, userID, newCoins int) error {
     query := `UPDATE users SET coins = $1 WHERE id = $2`
     _, err := r.db.Exec(ctx, query, newCoins, userID)
     return err
