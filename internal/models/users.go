@@ -22,10 +22,3 @@ type CoinHistory struct {
 	Received []Transfer `json:"received"`
 	Sent	 []Transfer `json:"sent"` 
 }
-
-// TODO: Трансфер уже описан в models/coin.go. Может сделать модель для неё?
-// type Transfer struct {
-// 	FromUser string `json:"fromUser"`
-//     ToUser   string `json:"toUser"`
-//     Amount   int    `json:"amount"`
-// }

@@ -11,14 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// TODO: remove to models
-type AuthRequest struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
 func AuthHandler(c *gin.Context) {
-	var req AuthRequest
+	var req models.AuthRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return

@@ -3,20 +3,25 @@ package database
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"time"
 
 	// "github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/joho/godotenv"
 )
 
 var DB *pgxpool.Pool // Глобальная переменная для пула соединений
 
 func Connect() error {
-	// TODO: Добавить .env
+	if err := godotenv.Load(); err != nil {
+        log.Fatal("Error loading .env file")
+    }
+	
 	dsn := fmt.Sprintf(
-		// "postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		"postgres://postgres:postgres@db:5432/avito_shop_db?sslmode=disable",
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		// "postgres://postgres:postgres@db:5432/avito_shop_db?sslmode=disable",
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_HOST"),

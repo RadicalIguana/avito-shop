@@ -31,14 +31,11 @@ func (r *MerchRepository) GetUserById(ctx context.Context, userID int) (*models.
 	row := r.db.QueryRow(ctx, query, userID)
 	var user models.User
 	if err := row.Scan(&user.Id, &user.Coins); err != nil {
-		// TODO: в чем разница errors и fmt.Errorf? Что использовать?
 		return nil, fmt.Errorf("user not found: %w", err)
 	}
 	return &user, nil
 }
 
-// Получение стоимости предмета
-// TODO: Почему мы возвращаем *models.Merch, а не models.Merch?
 func (r *MerchRepository) GetItemByName(ctx context.Context, name string) (*models.Merch, error) {
 	query := `
 		SELECT name, price

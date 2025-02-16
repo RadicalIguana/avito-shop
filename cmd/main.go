@@ -17,7 +17,6 @@ func main() {
 		log.Fatalf("Could not connect to database: %v", err)
 	}
 
-	// TODO: Для чего такие определения?
 	coinRepo := repositories.NewCoinRepository(database.DB)
 	coinService := services.NewCoinService(coinRepo)
 	coinHandler := handlers.NewCoinHandler(coinService)

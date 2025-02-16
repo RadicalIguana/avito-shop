@@ -22,13 +22,11 @@ func (s *MerchService) PurchaseItem(ctx context.Context, userID int, itemName st
     }
 	defer tx.Rollback(ctx)
 
-	// Получение пользователя
 	user, err := s.repo.GetUserById(ctx, userID)
 	if err != nil {
 		return errors.New("user not found")
 	}
 
-	// Получение стоимости покупаемого предмета
 	item, err := s.repo.GetItemByName(ctx, itemName)
 	if err != nil {
 		return errors.New("item not found")
@@ -38,13 +36,10 @@ func (s *MerchService) PurchaseItem(ctx context.Context, userID int, itemName st
 		return errors.New("not enough coins")
 	}
 
-    // TODO: Может изменить уменьшение монет?
-    // Обновление монет
 	if err := s.repo.UpdateUserBalance(ctx, userID, user.Coins-item.Price); err!= nil {
 		return err
 	}
 
-	// Добавить предмет в инвентарь
 	if err := s.repo.AddOrUpdateItemToInventory(ctx, userID, item.Name); err != nil {
         return err
     }

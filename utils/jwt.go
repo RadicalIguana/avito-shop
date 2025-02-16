@@ -6,7 +6,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// TODO: add secret key to .env
 var jwtKey = []byte("my_secret_key")
 
 func GenerateToken(userID int) (string, error) {

@@ -16,7 +16,6 @@ func NewUserInfoRepository(db *pgxpool.Pool) *UserInfoRepository {
 	return &UserInfoRepository{db: db}
 }
 
-// TODO: Может убрать эту функцию?
 func (r *UserInfoRepository) BeginTx(ctx context.Context) (pgx.Tx, error) {
     return r.db.Begin(ctx)
 }

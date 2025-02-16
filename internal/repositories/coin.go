@@ -20,7 +20,6 @@ func (r *CoinRepository) BeginTx(ctx context.Context) (pgx.Tx, error) {
     return r.db.Begin(ctx)
 }
 
-// TODO: Может поменять на GetUserById?
 func (r *CoinRepository) GetUserForUpdate(ctx context.Context, userID int) (*models.UserCoin, error) {
     query := `
         SELECT id, coins
@@ -29,7 +28,6 @@ func (r *CoinRepository) GetUserForUpdate(ctx context.Context, userID int) (*mod
         FOR UPDATE
     `
     row := r.db.QueryRow(ctx, query, userID)
-    // TODO: Может использовать User
     var user models.UserCoin
     if err := row.Scan(&user.ID, &user.Coins); err != nil {
         return nil, fmt.Errorf("user not found: %w", err)
@@ -45,8 +43,8 @@ func (r *CoinRepository) UpdateBalance(ctx context.Context, userID, newCoins int
 
 func (r *CoinRepository) CreateTransfer(ctx context.Context, transfer *models.Transfer) error {
     query := `
-        INSERT INTO transfers (from_user, to_user, amount, created_at)
-        VALUES ($1, $2, $3, NOW())
+        INSERT INTO transfers (from_user, to_user, amount)
+        VALUES ($1, $2, $3)
     `
     _, err := r.db.Exec(ctx, query,
         transfer.FromUser,

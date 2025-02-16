@@ -13,11 +13,7 @@ type Transfer struct {
 	CreatedAt string `json:"createdAt"`
 }
 
-
-// TODO: Просмотреть правильность использования UserCoin вместо User
 type UserCoin struct {
 	ID    int `json:"id"`
 	Coins int `json:"coins"`
 }
-
-// TODO: Может добавить ErrorResponse struct?

@@ -7,7 +7,6 @@ import (
 	"github.com/RadicalIguana/avito-shop/internal/services"
 )
 
-// TODO: PurchaseItemHandler?
 type MerchHandler struct {
 	service *services.MerchService
 }
@@ -16,8 +15,6 @@ func NewMerchHandler(service *services.MerchService) *MerchHandler {
     return &MerchHandler{service}
 }
 
-// TODO: Определить единое название
-// TODO: Что такое gin.HandlerFunc?
 func (h *MerchHandler) PurchaseItem(c *gin.Context) {
 	itemName := c.Param("item")
 	ctx := c.Request.Context()
