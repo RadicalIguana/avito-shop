@@ -1,2 +1,2 @@
-GET http://localhost:8080/api/info
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzk3Mjc0NDYsInVzZXJfaWQiOjF9.WrsPTiHkwXzNA10HnSXSVY-UJh2kK8PNK7AjwXVDFqs
+GET http://localhost:8080/api/buy/pen
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzk3ODA0MDEsInVzZXJfaWQiOjF9.QXUAKyEKZvxZIa9MuilBkwpS8h6gRYP6akR9VN3rHDg
