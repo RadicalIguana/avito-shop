@@ -18,12 +18,10 @@ func NewCoinService(repo *repositories.CoinRepository) *CoinService {
 }
 
 func (s *CoinService) TransferCoins(ctx context.Context, fromUserID, toUserID, amount int) error {
-    // Валидация
     if amount <= 0 {
         return errors.New("amount must be positive")
     }
 
-    // Начало транзакции
     tx, err := s.repo.BeginTx(ctx)
     if err != nil {
         return err

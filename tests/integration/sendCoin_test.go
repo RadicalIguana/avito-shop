@@ -6,12 +6,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"testing"
 
 	"github.com/RadicalIguana/avito-shop/internal/models"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +22,10 @@ var responseDataSend struct {
 }
 
 func setupSendDB(t *testing.T) {
-	// Подключение к тестовой базе данных
+	if err := godotenv.Load("../../../.env"); err != nil {
+        log.Fatal("Error loading .env file")
+    }
+
 	connString := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		os.Getenv("TEST_DB_USER"),
@@ -53,11 +58,9 @@ func setupSendDB(t *testing.T) {
     `)
     assert.NoError(t, err)
 
-	// Очистка и инициализация тестовых данных
 	_, err = db.Exec(context.Background(), "TRUNCATE TABLE users, merch, inventory CASCADE")
 	assert.NoError(t, err)
 
-	// Добавление тестовых пользователей
 	_, err = db.Exec(context.Background(), "INSERT INTO users (id, username, password, coins) VALUES ($1, $2, $3)", 1, "first", "password")
 	assert.NoError(t, err)
 
@@ -70,7 +73,6 @@ func TestSendCoin(t *testing.T) {
 
 	client := &http.Client{}
 
-	// Аутентификация пользователя 
 	authReq := map[string]string{
 		"username": "testuser",
 		"password": "testpass",
@@ -94,7 +96,6 @@ func TestSendCoin(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	token := responseDataPurchase.Token
 
-	// Отправка монет
 	sendReq := models.TransferRequest{
 		ToUser: 1,
 		Amount: 100,

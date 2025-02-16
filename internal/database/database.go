@@ -7,21 +7,18 @@ import (
 	"os"
 	"time"
 
-	// "github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 )
 
-var DB *pgxpool.Pool // Глобальная переменная для пула соединений
+var DB *pgxpool.Pool
 
 func Connect() error {
 	if err := godotenv.Load(); err != nil {
-        log.Fatal("Error loading .env file")
+        log.Fatal("Error loading .env file", err)
     }
-	
 	dsn := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		// "postgres://postgres:postgres@db:5432/avito_shop_db?sslmode=disable",
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_HOST"),
@@ -34,8 +31,8 @@ func Connect() error {
 		return fmt.Errorf("failed to parse DSN: %w", err)
 	}
 
-	config.MaxConns = 50
-	config.MinConns = 5
+	config.MaxConns = 500
+	config.MinConns = 50
 	config.MaxConnLifetime = 2 * time.Hour
     config.MaxConnIdleTime = 10 * time.Minute
     config.HealthCheckPeriod = 30 * time.Second

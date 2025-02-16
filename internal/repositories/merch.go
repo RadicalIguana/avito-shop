@@ -26,7 +26,6 @@ func (r *MerchRepository) GetUserById(ctx context.Context, userID int) (*models.
 		SELECT id, coins
 		FROM users
 		WHERE id = $1
-		FOR UPDATE
 	`
 	row := r.db.QueryRow(ctx, query, userID)
 	var user models.User
@@ -41,7 +40,6 @@ func (r *MerchRepository) GetItemByName(ctx context.Context, name string) (*mode
 		SELECT name, price
 		FROM merch
 		WHERE name = $1
-		FOR UPDATE
 	`
 	row := r.db.QueryRow(ctx, query, name)
 	var merch models.Merch

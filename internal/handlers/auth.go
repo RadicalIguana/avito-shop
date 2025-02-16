@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/RadicalIguana/avito-shop/internal/database"
@@ -43,7 +42,6 @@ func AuthHandler(c *gin.Context) {
             return
         }
 	} else {
-		fmt.Println(req.Username, req.Password)
 		if !utils.CheckPasswordHash(req.Password, user.Password) {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
             return

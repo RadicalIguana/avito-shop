@@ -1,0 +1,10 @@
+http://localhost:8080/api/auth
+
+Requests      [total, rate, throughput]         998, 999.20, 23.53
+Duration      [total, attack, wait]             42.415s, 998.801ms, 41.416s
+Latencies     [min, mean, 50, 90, 95, 99, max]  262.824ms, 36.245s, 40.258s, 41.817s, 42.06s, 42.204s, 42.302s
+Bytes In      [total, mean]                     135729, 136.00
+Bytes Out     [total, mean]                     55888, 56.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:998  
+Error Set:

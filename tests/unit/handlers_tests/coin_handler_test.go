@@ -19,11 +19,10 @@ import (
 )
 
 func setupCoinTestDB(t *testing.T) *pgxpool.Pool {
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load("../../../.env"); err != nil {
         log.Fatal("Error loading .env file")
     }
 	
-	// Подключение к тестовой базе данных
 	connString := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		os.Getenv("TEST_DB_USER"),
@@ -37,7 +36,6 @@ func setupCoinTestDB(t *testing.T) *pgxpool.Pool {
 		t.Fatalf("failed to connect to database: %v", err)
 	}
 
-	// Создание таблиц
 	_, err = db.Exec(context.Background(), `
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
@@ -55,13 +53,11 @@ func setupCoinTestDB(t *testing.T) *pgxpool.Pool {
 		t.Fatalf("failed to create tables: %v", err)
 	}
 
-	// Очистка таблиц перед тестами
 	_, err = db.Exec(context.Background(), "TRUNCATE users, transfers RESTART IDENTITY CASCADE")
 	if err != nil {
 		t.Fatalf("failed to truncate tables: %v", err)
 	}
 
-	// Добавление тестовых данных
 	_, err = db.Exec(context.Background(), "INSERT INTO users (id, coins) VALUES (1, 200), (2, 50)")
 	if err != nil {
 		t.Fatalf("failed to insert test data: %v", err)

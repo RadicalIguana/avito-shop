@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
-	// "github.com/RadicalIguana/avito-shop/internal/models"
 	"github.com/RadicalIguana/avito-shop/internal/services"
 )
 

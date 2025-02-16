@@ -1,2 +1,3 @@
-GET http://localhost:8080/api/buy/pen
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzk3ODA0MDEsInVzZXJfaWQiOjF9.QXUAKyEKZvxZIa9MuilBkwpS8h6gRYP6akR9VN3rHDg
+POST http://localhost:8000/api/sendCoin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzk4MTYzNjQsInVzZXJfaWQiOjF9.mRaEEsxM1v04W-5NjLubDzjDHCS4pvPlzqH66TT0X-0
+Content-Type: application/json

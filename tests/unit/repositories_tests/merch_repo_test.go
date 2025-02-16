@@ -14,11 +14,10 @@ import (
 )
 
 func setupMerchTestDB(t *testing.T) *pgxpool.Pool {
-    if err := godotenv.Load(); err != nil {
+    if err := godotenv.Load("../../../.env"); err != nil {
         log.Fatal("Error loading .env file")
     }
 
-    // Подключение к тестовой базе данных
     connString := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		os.Getenv("TEST_DB_USER"),
@@ -32,7 +31,6 @@ func setupMerchTestDB(t *testing.T) *pgxpool.Pool {
         t.Fatalf("failed to connect to database: %v", err)
     }
 
-    // Создание таблиц
     _, err = db.Exec(context.Background(), `
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
@@ -54,13 +52,11 @@ func setupMerchTestDB(t *testing.T) *pgxpool.Pool {
         t.Fatalf("failed to create tables: %v", err)
     }
 
-    // Очистка таблиц перед тестами
     _, err = db.Exec(context.Background(), "TRUNCATE users, merch, inventory RESTART IDENTITY CASCADE")
     if err != nil {
         t.Fatalf("failed to truncate tables: %v", err)
     }
 
-    // Добавление тестовых данных
     _, err = db.Exec(context.Background(), "INSERT INTO users (id, coins) VALUES (1, 200)")
     if err != nil {
         t.Fatalf("failed to insert test data: %v", err)
@@ -75,14 +71,11 @@ func setupMerchTestDB(t *testing.T) *pgxpool.Pool {
 
 
 func TestGetUserById_Success(t *testing.T) {
-    // Настройка тестовой базы данных
     db := setupMerchTestDB(t)
     defer db.Close()
 
-    // Инициализация репозитория
     repo := repositories.NewMerchRepository(db)
 
-    // Выполнение метода
     user, err := repo.GetUserById(context.Background(), 1)
     assert.NoError(t, err)
     assert.Equal(t, 1, user.Id)
@@ -90,14 +83,11 @@ func TestGetUserById_Success(t *testing.T) {
 }
 
 func TestGetItemByName_Success(t *testing.T) {
-    // Настройка тестовой базы данных
     db := setupMerchTestDB(t)
     defer db.Close()
 
-    // Инициализация репозитория
     repo := repositories.NewMerchRepository(db)
 
-    // Выполнение метода
     item, err := repo.GetItemByName(context.Background(), "sword")
     assert.NoError(t, err)
     assert.Equal(t, "sword", item.Name)
@@ -105,18 +95,14 @@ func TestGetItemByName_Success(t *testing.T) {
 }
 
 func TestUpdateUserBalance_Success(t *testing.T) {
-    // Настройка тестовой базы данных
     db := setupMerchTestDB(t)
     defer db.Close()
 
-    // Инициализация репозитория
     repo := repositories.NewMerchRepository(db)
 
-    // Обновление баланса
     err := repo.UpdateUserBalance(context.Background(), 1, 100)
     assert.NoError(t, err)
 
-    // Проверка состояния базы данных
     var coins int
     err = db.QueryRow(context.Background(), "SELECT coins FROM users WHERE id = $1", 1).Scan(&coins)
     assert.NoError(t, err)
@@ -124,18 +110,14 @@ func TestUpdateUserBalance_Success(t *testing.T) {
 }
 
 func TestAddOrUpdateItemToInventory_Success(t *testing.T) {
-    // Настройка тестовой базы данных 
     db := setupMerchTestDB(t)
     defer db.Close()
 
-    // Инициализация репозитория
     repo := repositories.NewMerchRepository(db)
 
-    // Добавление предмета в инвентарь
     err := repo.AddOrUpdateItemToInventory(context.Background(), 1, "sword")
     assert.NoError(t, err)
 
-    // Проверка состояния базы данных
     var quantity int
     err = db.QueryRow(context.Background(), "SELECT quantity FROM inventory WHERE user_id = $1 AND item_name = $2", 1, "sword").Scan(&quantity)
     assert.NoError(t, err)

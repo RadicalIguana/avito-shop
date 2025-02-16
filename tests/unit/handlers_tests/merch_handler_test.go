@@ -17,11 +17,10 @@ import (
 )
 
 func setupMerchTestDB(t *testing.T) *pgxpool.Pool {
-	if err := godotenv.Load(); err != nil {
-        log.Fatal("Error loading .env file")
+	if err := godotenv.Load("../../../.env"); err != nil {
+        log.Fatal("Error loading .env file", err)
     }
 	
-    // Подключение к тестовой базе данных
     connString := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		os.Getenv("TEST_DB_USER"),
@@ -35,7 +34,6 @@ func setupMerchTestDB(t *testing.T) *pgxpool.Pool {
         t.Fatalf("failed to connect to database: %v", err)
     }
 
-    // Создание таблиц
     _, err = db.Exec(context.Background(), `
         DROP TABLE IF EXISTS inventory;
         DROP TABLE IF EXISTS transfers;
@@ -63,13 +61,11 @@ func setupMerchTestDB(t *testing.T) *pgxpool.Pool {
         t.Fatalf("failed to create tables: %v", err)
     }
 
-    // Очистка таблиц перед тестами
     _, err = db.Exec(context.Background(), "TRUNCATE users, merch, inventory RESTART IDENTITY CASCADE")
     if err != nil {
         t.Fatalf("failed to truncate tables: %v", err)
     }
 
-    // Добавление тестовых данных
     _, err = db.Exec(context.Background(), "INSERT INTO users (id, username, password, coins) VALUES (1, 'first', 'first', 1000)")
     if err != nil {
         t.Fatalf("failed to insert test data: %v", err)
@@ -138,13 +134,11 @@ func TestPurchaseItem_Success(t *testing.T) {
         panic(err)
     }
 
-    // Проверяем результат
     assert.Equal(t, http.StatusOK, buyResp.StatusCode)
     assert.JSONEq(t, `{"message":"Item purchased successfully"}`, string(responseJSON))
 }
 
 func TestPurchaseItem_NotEnoughCoins(t *testing.T) {
-    // Настройка тестовой базы данных
     db := setupMerchTestDB(t)
     defer db.Close()
 
@@ -177,7 +171,7 @@ func TestPurchaseItem_NotEnoughCoins(t *testing.T) {
 		panic(err)
 	}
     
-    buyUrl := "http://localhost:8080/api/buy/book"
+    buyUrl := "http://localhost:8080/api/buy/pen"
     buyReq, err := http.NewRequest(http.MethodGet, buyUrl, nil)
     buyReq.Header.Set("Content-Type", "application/json")
     buyReq.Header.Add("Authorization", fmt.Sprintf("Bearer %s", responseData.Token))

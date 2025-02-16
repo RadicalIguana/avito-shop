@@ -1,0 +1,10 @@
+http://localhost:8080/api/info
+
+Requests      [total, rate, throughput]         1000, 999.61, 997.62
+Duration      [total, attack, wait]             1.002s, 1s, 1.99ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  699.386µs, 3.543ms, 2.653ms, 7.391ms, 9.152ms, 11.984ms, 18.568ms
+Bytes In      [total, mean]                     162000, 162.00
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:1000  
+Error Set:
